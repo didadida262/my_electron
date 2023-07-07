@@ -22,29 +22,37 @@ const createWindow = () => {
       autoHideMenuBar: true,
       show: false,
       webPreferences: {
-        // preload: path.join(__dirname, 'preload.js'),
+        preload: path.join(__dirname, 'preload.js'),
         nodeIntegration: true,
-        contextIsolation: false,
+        // contextIsolation: false,
         enableRemoteModule: true
       }
     })
     remote.initialize() 
     remote.enable(win.webContents)
     win.loadFile('index.html')
+    // win.loadFile('./dist/index.html')
     // 处理白屏
     win.on('ready-to-show', () => {
       win.show()
     })
   
   }
-
-  app.whenReady().then(() => {
+  app.on('ready', () => {
     ipcMain.handle('ping', () => 'pong')
     createWindow()
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
   })
+
+  // app.whenReady().then(() => {
+  //   ipcMain.handle('ping', () => 'pong')
+  //   createWindow()
+  //   app.on('activate', () => {
+  //     if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  //   })
+  // })
 
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
