@@ -1,4 +1,6 @@
 const { app, BrowserWindow, ipcMain  } = require('electron')
+const remote = require('@electron/remote/main')
+
 const path = require('path')
 
 const createWindow = () => {
@@ -11,12 +13,23 @@ const createWindow = () => {
       // minWidht: 400,
       width: 800,
       height: 600,
-      resizable: false,
+      // resizable: false,
+      title: "点歌系统",
+      // icon: 
+      // 隐藏默认菜单和titile
+      // frame: false,
+      // 隐藏默认菜单栏
+      autoHideMenuBar: true,
       show: false,
       webPreferences: {
-        preload: path.join(__dirname, 'preload.js')
+        // preload: path.join(__dirname, 'preload.js'),
+        nodeIntegration: true,
+        contextIsolation: false,
+        enableRemoteModule: true
       }
     })
+    remote.initialize() 
+    remote.enable(win.webContents)
     win.loadFile('index.html')
     // 处理白屏
     win.on('ready-to-show', () => {
