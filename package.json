@@ -16,5 +16,9 @@
     "@electron/remote": "^2.0.10",
     "electron": "^25.2.0",
     "nodemon": "^2.0.22"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "jsonwebtoken": "^9.0.1"
   }
 }

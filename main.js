@@ -1,5 +1,9 @@
 const { app, BrowserWindow, ipcMain  } = require('electron')
-const remote = require('@electron/remote/main')
+// const remote = require('@electron/remote/main')
+const { CATEGORIES} = require('./utils/const')
+const fs = require('fs')
+
+console.log('CATEGORIES>>>',CATEGORIES)
 
 const path = require('path')
 
@@ -25,11 +29,11 @@ const createWindow = () => {
         preload: path.join(__dirname, 'preload.js'),
         nodeIntegration: true,
         // contextIsolation: false,
-        enableRemoteModule: true
+        // enableRemoteModule: true
       }
     })
-    remote.initialize() 
-    remote.enable(win.webContents)
+    // remote.initialize() 
+    // remote.enable(win.webContents)
     win.loadFile('index.html')
     // win.loadFile('./dist/index.html')
     // 处理白屏
@@ -39,20 +43,15 @@ const createWindow = () => {
   
   }
   app.on('ready', () => {
-    ipcMain.handle('ping', () => 'pong')
+    ipcMain.on('message-from-render', (event, message) => {
+      console.log('main--receive-', message)
+      event.sender.send('message-from-main', 'asdasdasd')
+    })
     createWindow()
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
   })
-
-  // app.whenReady().then(() => {
-  //   ipcMain.handle('ping', () => 'pong')
-  //   createWindow()
-  //   app.on('activate', () => {
-  //     if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  //   })
-  // })
 
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
